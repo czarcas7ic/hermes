@@ -7,6 +7,7 @@ fields added specific to Osmosis:
 - lcd_addr (used to query the EIP fee)
 - gas_price (dynamically updated to match the EIP base fee)
 - gas_price_buffer (used to add a buffer to the gas price to ensure that the tx will be accepted)
+- max_gas_price (this is the max gas price that will be used (this is the gas_price determined from EIP fee plus the gas_price_buffer))
 
 ```sh
 # osmosis
