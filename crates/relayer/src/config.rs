@@ -686,7 +686,7 @@ impl ChainConfig {
                         .expect("This branch needs an LCD addr")
                         .to_string(),
                 ))
-                .unwrap(),
+                .unwrap() + self.gas_price_buffer.unwrap_or(0.0),
                 denom: self.gas_price.denom.clone(),
             },
 
