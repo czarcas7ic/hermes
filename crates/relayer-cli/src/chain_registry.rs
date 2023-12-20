@@ -158,6 +158,7 @@ where
             denom: asset.base.to_owned(),
         },
         gas_price_buffer: None,
+        max_gas_price: None,
         packet_filter: packet_filter.unwrap_or_default(),
         address_type: AddressType::default(),
         sequential_batch_tx: false,

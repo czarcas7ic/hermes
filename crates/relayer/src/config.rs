@@ -44,8 +44,8 @@ pub use crate::config::Error as ConfigError;
 pub use error::Error;
 
 use crate::chain::cosmos::query_eip_base_fee;
-pub use filter::PacketFilter;
 use crate::util::block_on;
+pub use filter::PacketFilter;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GasPrice {
@@ -663,6 +663,7 @@ pub struct ChainConfig {
 
     pub gas_price: GasPrice,
     pub gas_price_buffer: Option<f64>,
+    pub max_gas_price: Option<f64>,
 
     #[serde(default)]
     pub packet_filter: PacketFilter,
@@ -678,18 +679,29 @@ pub struct ChainConfig {
 impl ChainConfig {
     pub fn dynamic_gas_price(&self) -> GasPrice {
         match self.id.as_str() {
-            "osmosis-1" => GasPrice {
-                price: block_on(query_eip_base_fee(
+            "osmosis-1" => {
+                let new_price = block_on(query_eip_base_fee(
                     &self
                         .lcd_addr
                         .clone()
                         .expect("This branch needs an LCD addr")
                         .to_string(),
                 ))
-                .unwrap() + self.gas_price_buffer.unwrap_or(0.0),
-                denom: self.gas_price.denom.clone(),
-            },
+                .unwrap()
+                    + self.gas_price_buffer.unwrap_or(0.0);
 
+                let max_gas_price = self.max_gas_price.unwrap_or(0.0);
+                let final_price = if new_price > max_gas_price {
+                    max_gas_price
+                } else {
+                    new_price
+                };
+
+                GasPrice {
+                    price: final_price,
+                    denom: self.gas_price.denom.clone(),
+                }
+            }
             _ => self.gas_price.clone(),
         }
     }
