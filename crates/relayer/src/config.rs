@@ -660,6 +660,7 @@ pub struct ChainConfig {
     pub trust_threshold: TrustThreshold,
 
     pub gas_price: GasPrice,
+    pub gas_price_buffer: Option<f64>,
 
     #[serde(default)]
     pub packet_filter: PacketFilter,
