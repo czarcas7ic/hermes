@@ -6,8 +6,8 @@ fields added specific to Osmosis:
 
 - lcd_addr (used to query the EIP fee)
 - gas_price (dynamically updated to match the EIP base fee)
-- gas_price_buffer (used to add a buffer to the gas price to ensure that the tx will be accepted)
-- max_gas_price (this is the max gas price that will be used (this is the gas_price determined from EIP fee plus the gas_price_buffer))
+- gas_price_multiplier (used to increase the base gas price to ensure that the tx will be accepted)
+- max_gas_price (this is the max gas price that will be used (this is the gas_price determined from EIP fee times the gas_price_multiplier))
 
 ```sh
 # osmosis
@@ -25,8 +25,8 @@ store_prefix = 'ibc'
 default_gas = 100000
 max_gas = 5000000
 gas_price = { price = 0.025, denom = 'uosmo' } # this value will be dynamically updated
-gas_price_buffer = 0.001 # this value is added to the dynamic gas_price to ensure that the tx will be accepted
-max_gas_price = 0.6 # this is the max gas price that will be used (this is the gas_price determined from EIP fee plus the gas_price_buffer)
+gas_price_multiplier = 0.001 # this value is added to the dynamic gas_price to ensure that the tx will be accepted
+max_gas_price = 0.6 # this is the max gas price that will be used (this is the gas_price determined from EIP fee plus the gas_price_multiplier)
 gas_multiplier = 1.1
 max_msg_num = 30
 max_tx_size = 2097152

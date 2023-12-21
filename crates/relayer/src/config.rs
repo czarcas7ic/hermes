@@ -662,7 +662,7 @@ pub struct ChainConfig {
     pub trust_threshold: TrustThreshold,
 
     pub gas_price: GasPrice,
-    pub gas_price_buffer: Option<f64>,
+    pub gas_price_multiplier: Option<f64>,
     pub max_gas_price: Option<f64>,
 
     #[serde(default)]
@@ -688,7 +688,7 @@ impl ChainConfig {
                         .to_string(),
                 ))
                 .unwrap()
-                    + self.gas_price_buffer.unwrap_or(0.0);
+                    + self.gas_price_multiplier.unwrap_or(1.1);
 
                 let max_gas_price = self.max_gas_price.unwrap_or(0.0);
                 let final_price = if new_price > max_gas_price {

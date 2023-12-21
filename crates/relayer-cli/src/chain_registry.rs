@@ -157,7 +157,7 @@ where
             price: avg_gas_price,
             denom: asset.base.to_owned(),
         },
-        gas_price_buffer: None,
+        gas_price_multiplier: None,
         max_gas_price: None,
         packet_filter: packet_filter.unwrap_or_default(),
         address_type: AddressType::default(),

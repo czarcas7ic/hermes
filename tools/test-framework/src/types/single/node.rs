@@ -177,7 +177,7 @@ impl FullNode {
                 0.003,
                 test_config.native_tokens[native_token_number].clone(),
             ),
-            gas_price_buffer: None,
+            gas_price_multiplier: None,
             max_gas_price: None,
             packet_filter: Default::default(),
             address_type: chain_type.address_type(),
