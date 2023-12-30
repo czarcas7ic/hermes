@@ -678,7 +678,7 @@ impl ChainConfig {
         match self.id.as_str() {
             "osmosis-1" => {
                 let new_price = block_on(query_eip_base_fee(&self.rpc_addr.to_string())).unwrap()
-                    + self.gas_price_multiplier.unwrap_or(1.1);
+                    * self.gas_price_multiplier.unwrap_or(1.1);
 
                 let max_gas_price = self.max_gas_price.unwrap_or(0.0);
                 let final_price = if new_price > max_gas_price {
