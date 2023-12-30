@@ -4,8 +4,7 @@
 
 fields added specific to Osmosis:
 
-- lcd_addr (used to query the EIP fee)
-- gas_price (dynamically updated to match the EIP base fee)
+- gas_price (not added, but dynamically updated to match the EIP base fee)
 - gas_price_multiplier (used to increase the base gas price to ensure that the tx will be accepted)
 - max_gas_price (this is the max gas price that will be used (this is the gas_price determined from EIP fee times the gas_price_multiplier))
 
@@ -15,7 +14,6 @@ fields added specific to Osmosis:
 id = 'osmosis-1'
 rpc_addr = 'http://127.0.0.1:26557'
 grpc_addr = 'http://127.0.0.1:9091'
-lcd_addr = 'http://127.0.0.1:1317' # this is used for querying EIP fee, was easier than figuring out rpc
 event_source = { mode = 'push', url = 'ws://127.0.0.1:26557/websocket', batch_delay = '500ms' }
 rpc_timeout = '10s'
 trusted_node = false

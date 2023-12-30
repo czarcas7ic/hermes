@@ -417,7 +417,6 @@ address_type = { derivation = 'cosmos' }
 id = 'osmosis-1'
 rpc_addr = 'http://127.0.0.1:26557'
 grpc_addr = 'http://127.0.0.1:9091'
-lcd_addr = 'http://127.0.0.1:1317' # this is used for querying EIP fee, was easier than figuring out rpc
 event_source = { mode = 'push', url = 'ws://127.0.0.1:26557/websocket', batch_delay = '500ms' }
 rpc_timeout = '10s'
 trusted_node = false

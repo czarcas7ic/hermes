@@ -574,9 +574,6 @@ pub struct ChainConfig {
     /// The gRPC URL to connect to
     pub grpc_addr: Url,
 
-    /// The LCD URL to connect to, for Osmosis EIP Fees only
-    pub lcd_addr: Option<Url>,
-
     /// The type of event source and associated settings
     pub event_source: EventSourceMode,
 
@@ -680,14 +677,7 @@ impl ChainConfig {
     pub fn dynamic_gas_price(&self) -> GasPrice {
         match self.id.as_str() {
             "osmosis-1" => {
-                let new_price = block_on(query_eip_base_fee(
-                    &self
-                        .lcd_addr
-                        .clone()
-                        .expect("This branch needs an LCD addr")
-                        .to_string(),
-                ))
-                .unwrap()
+                let new_price = block_on(query_eip_base_fee(&self.rpc_addr.to_string())).unwrap()
                     + self.gas_price_multiplier.unwrap_or(1.1);
 
                 let max_gas_price = self.max_gas_price.unwrap_or(0.0);
