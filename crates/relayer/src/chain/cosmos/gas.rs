@@ -7,6 +7,9 @@ use num_rational::BigRational;
 use crate::chain::cosmos::types::gas::GasConfig;
 use crate::config::GasPrice;
 
+use crate::chain::cosmos::query_eip_base_fee;
+use crate::util::block_on;
+
 pub fn gas_amount_to_fee(config: &GasConfig, gas_amount: u64) -> Fee {
     let adjusted_gas_limit = adjust_estimated_gas(AdjustGas {
         gas_multiplier: config.gas_multiplier,
@@ -15,13 +18,37 @@ pub fn gas_amount_to_fee(config: &GasConfig, gas_amount: u64) -> Fee {
     });
 
     // The fee in coins based on gas amount
-    let amount = calculate_fee(adjusted_gas_limit, &config.gas_price);
+    // First, get the dynamic gas price
+    let dyanmic_gas_price = dynamic_gas_price(config);
+    let amount = calculate_fee(adjusted_gas_limit, &dyanmic_gas_price);
 
     Fee {
         amount: vec![amount],
         gas_limit: adjusted_gas_limit,
         payer: "".to_string(),
         granter: config.fee_granter.clone(),
+    }
+}
+
+pub fn dynamic_gas_price(config: &GasConfig) -> GasPrice {
+    match config.chain_id.as_str() {
+        "osmosis-1" => {
+            let new_price = block_on(query_eip_base_fee(config.rpc_addr.as_str())).unwrap()
+                * config.gas_price_multiplier;
+
+            let max_gas_price = config.max_gas_price;
+            let final_price = if new_price > max_gas_price {
+                max_gas_price
+            } else {
+                new_price
+            };
+
+            GasPrice {
+                price: final_price,
+                denom: config.gas_price.denom.clone(),
+            }
+        }
+        _ => config.gas_price.clone(),
     }
 }
 

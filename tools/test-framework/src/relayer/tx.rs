@@ -21,6 +21,12 @@ pub fn gas_config_for_test(native_token: String) -> GasConfig {
     let default_gas = max_gas;
     let fee_granter = "".to_string();
 
+    // temp fields to fix stale gas prices
+    let chain_id = "".to_string();
+    let gas_price_multiplier = 1.1;
+    let rpc_addr = "".to_string();
+    let max_gas_price = 0.6;
+
     let max_fee = Fee {
         amount: vec![calculate_fee(max_gas, &gas_price)],
         gas_limit: max_gas,
@@ -35,6 +41,11 @@ pub fn gas_config_for_test(native_token: String) -> GasConfig {
         gas_price,
         max_fee,
         fee_granter,
+        // temp fields to fix stale gas prices
+        chain_id,
+        gas_price_multiplier,
+        rpc_addr,
+        max_gas_price,
     }
 }
 

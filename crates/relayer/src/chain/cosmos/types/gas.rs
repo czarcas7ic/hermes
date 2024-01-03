@@ -16,6 +16,11 @@ pub struct GasConfig {
     pub gas_price: GasPrice,
     pub max_fee: Fee,
     pub fee_granter: String,
+    // temp fields to fix stale gas prices
+    pub chain_id: String,
+    pub gas_price_multiplier: f64,
+    pub rpc_addr: String,
+    pub max_gas_price: f64,
 }
 
 impl<'a> From<&'a ChainConfig> for GasConfig {
@@ -27,6 +32,11 @@ impl<'a> From<&'a ChainConfig> for GasConfig {
             gas_price: config.dynamic_gas_price(),
             max_fee: max_fee_from_config(config),
             fee_granter: fee_granter_from_config(config),
+            // temp fields to fix stale gas prices
+            chain_id: config.id.name().to_string(),
+            gas_price_multiplier: gas_price_multiplier_from_config(config),
+            rpc_addr: config.rpc_addr.to_string(),
+            max_gas_price: max_gas_price_from_config(config),
         }
     }
 }
@@ -72,4 +82,12 @@ fn max_fee_from_config(config: &ChainConfig) -> Fee {
         payer: "".to_string(),
         granter: fee_granter,
     }
+}
+
+pub fn gas_price_multiplier_from_config(config: &ChainConfig) -> f64 {
+    config.gas_price_multiplier.unwrap_or(1.1)
+}
+
+pub fn max_gas_price_from_config(config: &ChainConfig) -> f64 {
+    config.max_gas_price.unwrap_or(0.0)
 }
