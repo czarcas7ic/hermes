@@ -404,6 +404,7 @@ impl Display for LogLevel {
 #[serde(default, deny_unknown_fields)]
 pub struct GlobalConfig {
     pub log_level: LogLevel,
+    pub max_receiver_addr_len: usize,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

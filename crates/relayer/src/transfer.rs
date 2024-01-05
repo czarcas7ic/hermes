@@ -68,6 +68,10 @@ define_error! {
 
         ZeroTimeout
             | _ | { "packet timeout height and packet timeout timestamp cannot both be 0" },
+
+        ReceiverAddressTooLong
+            [ SignerError ]
+            |_| { "receiver address too long error "},
     }
 }
 
@@ -161,9 +165,17 @@ pub fn build_transfer_messages<SrcChain: ChainHandle, DstChain: ChainHandle>(
     src_chain: &SrcChain, // the chain whose account is debited
     dst_chain: &DstChain, // the chain whose account eventually gets credited
     opts: &TransferOptions,
+    max_receiver_addr_len: usize,
 ) -> Result<Vec<Any>, TransferError> {
     let receiver = match &opts.receiver {
-        Some(receiver) => Signer::from_str(receiver).map_err(TransferError::receiver_address)?,
+        Some(receiver) => {
+            if receiver.len() > max_receiver_addr_len {
+                return Err(TransferError::receiver_address_too_long(
+                    SignerError::signer_too_long(),
+                ));
+            }
+            Signer::from_str(receiver).map_err(TransferError::receiver_address)?
+        }
         None => dst_chain.get_signer().map_err(TransferError::key)?,
     };
 
@@ -228,7 +240,8 @@ pub fn build_and_send_transfer_messages<SrcChain: ChainHandle, DstChain: ChainHa
     dst_chain: &DstChain,
     // options describing the transfer
     opts: &TransferOptions,
+    max_receiver_addr_len: usize,
 ) -> Result<Vec<IbcEventWithHeight>, TransferError> {
-    let msgs = build_transfer_messages(src_chain, dst_chain, opts)?;
+    let msgs = build_transfer_messages(src_chain, dst_chain, opts, max_receiver_addr_len)?;
     send_messages(src_chain, msgs)
 }

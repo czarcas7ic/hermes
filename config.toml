@@ -11,6 +11,11 @@
 # Valid options are 'error', 'warn', 'info', 'debug', 'trace'.
 log_level = 'debug'
 
+# The max length of the receiver address in bytes.
+# This is specified because there is an attack vector where a malicious
+# actor can send a packet with a very long receiver address, which
+# will cause nodes to store large ABCI responses.
+max_receiver_addr_len = 250
 
 # Specify the mode to be used by the relayer. [Required]
 [mode]

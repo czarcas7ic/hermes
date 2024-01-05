@@ -267,6 +267,7 @@ fn fee_transfer(chains: ChainHandlePair, opts: FeeTransferOptions) -> Result<(),
         &opts.src_port_id,
         &opts.dst_chain_id,
     )?;
+    let config = app_config();
 
     let sender = chains.src.get_signer()?;
     let receive_fee = Coin::new(opts.denom.clone(), opts.receive_fee);
@@ -288,7 +289,12 @@ fn fee_transfer(chains: ChainHandlePair, opts: FeeTransferOptions) -> Result<(),
     // In addition, a fee message is sent for every transfer message.
     let mut msgs = vec![];
 
-    let transfer = build_transfer_messages(&chains.src, &chains.dst, &opts.into())?;
+    let transfer = build_transfer_messages(
+        &chains.src,
+        &chains.dst,
+        &opts.into(),
+        config.global.max_receiver_addr_len,
+    )?;
     for t in transfer {
         msgs.push(pay_message.clone());
         msgs.push(t);

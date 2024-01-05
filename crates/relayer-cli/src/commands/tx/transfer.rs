@@ -198,9 +198,13 @@ impl Runnable for TxIcs20MsgTransferCmd {
         .unwrap_or_else(exit_with_unrecoverable_error);
 
         // Checks pass, build and send the tx
-        let res: Result<Vec<IbcEventWithHeight>, Error> =
-            build_and_send_transfer_messages(&chains.src, &chains.dst, &opts)
-                .map_err(Error::transfer);
+        let res: Result<Vec<IbcEventWithHeight>, Error> = build_and_send_transfer_messages(
+            &chains.src,
+            &chains.dst,
+            &opts,
+            config.global.max_receiver_addr_len,
+        )
+        .map_err(Error::transfer);
 
         match res {
             Ok(ev) => Output::success(ev).exit(),

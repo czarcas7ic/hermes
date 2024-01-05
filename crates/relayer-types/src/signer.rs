@@ -9,6 +9,9 @@ define_error! {
     SignerError {
         EmptySigner
             | _ | { "signer cannot be empty" },
+
+        SignerTooLong
+            | _ | { "signer cannot be longer than max" },
     }
 }
 
